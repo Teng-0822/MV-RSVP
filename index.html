@@ -619,6 +619,11 @@
       color: #EF4444;
     }
 
+    .stat-pending .stat-icon {
+      background: rgba(234, 179, 8, 0.1);
+      color: #EAB308;
+    }
+
     .stat-messages .stat-icon {
       background: rgba(201, 169, 110, 0.1);
       color: var(--accent);
@@ -922,7 +927,7 @@
       height: 14px;
     }
 
-    /* Responsive */
+    /* Responsive - Tablet */
     @media (max-width: 900px) {
       .layout {
         grid-template-columns: 1fr;
@@ -935,6 +940,128 @@
       .preview {
         max-height: none;
         padding: 1rem;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .filter-bar {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .filter-group {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .sort-group {
+        width: 100%;
+      }
+      .sort-group select {
+        width: 100%;
+      }
+      .guest-table-container {
+        overflow-x: auto;
+      }
+      .guest-table {
+        min-width: 500px;
+      }
+    }
+
+    /* Responsive - Mobile */
+    @media (max-width: 600px) {
+      .app-header {
+        padding: 1rem;
+      }
+      .app-title {
+        font-size: 1.2rem;
+      }
+      .tabs {
+        gap: 0.25rem;
+        padding: 0.35rem;
+      }
+      .tab {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.7rem;
+      }
+      .tab-content {
+        padding: 1rem;
+      }
+      .section {
+        padding: 1rem;
+      }
+      .section-title {
+        font-size: 0.9rem;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+      }
+      .stat-card {
+        padding: 0.75rem;
+      }
+      .stat-count {
+        font-size: 1rem;
+      }
+      .stat-label {
+        font-size: 0.6rem;
+      }
+      .filter-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        justify-content: center;
+      }
+      .filter-btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.7rem;
+      }
+      .search-box input {
+        font-size: 0.85rem;
+      }
+      .guest-name-cell {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+      }
+      .btn-copy-link {
+        font-size: 0.6rem;
+        padding: 0.15rem 0.4rem;
+      }
+      .btn-copy-link span {
+        display: none;
+      }
+      .btn-copy-link svg {
+        width: 14px;
+        height: 14px;
+      }
+      .table-footer {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+      }
+      .preview-tabs {
+        flex-wrap: wrap;
+      }
+      .preview-tab {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.7rem;
+      }
+    }
+
+    /* Responsive - Small Mobile */
+    @media (max-width: 400px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .stat-card {
+        flex-direction: row;
+        text-align: left;
+      }
+      .filter-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .filter-btn {
+        width: 100%;
       }
     }
 
@@ -1131,6 +1258,18 @@
                 <span class="stat-label">Declined</span>
               </div>
             </div>
+            <div class="stat-card stat-pending">
+              <div class="stat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+              <div class="stat-info">
+                <span class="stat-count" id="pendingCount">0</span>
+                <span class="stat-label">Pending</span>
+              </div>
+            </div>
             <div class="stat-card stat-messages">
               <div class="stat-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1153,6 +1292,7 @@
               <button class="filter-btn active" onclick="filterGuests('all')">All</button>
               <button class="filter-btn" onclick="filterGuests('Yes')">Accepted</button>
               <button class="filter-btn" onclick="filterGuests('No')">Declined</button>
+              <button class="filter-btn" onclick="filterGuests('pending')">Pending</button>
               <button class="filter-btn" onclick="filterGuests('message')">With Message</button>
             </div>
             <div class="sort-group">
@@ -1223,7 +1363,7 @@
           <div class="section-title">Google Apps Script</div>
           <div class="field">
             <label for="scriptUrl">Web App URL</label>
-            <input type="url" id="scriptUrl" value="https://script.google.com/macros/s/AKfycbxLKG6P5C-WS1rZ5TodfsYAjADuCfWwJczfvmBK0jkCMGDDhZmQx0B6MP3mcDtfzQo/exec">
+            <input type="url" id="scriptUrl" value="https://script.google.com/macros/s/AKfycbxoAvT2O5ktRNSuiA3EEPWQVrRQEitmPGqWJqYCzF1hsw8VGE-HlN0xoqjWf_5skKo/exec">
             <p class="hint">Paste your Google Apps Script web app URL here</p>
           </div>
         </div>
@@ -1320,6 +1460,11 @@
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       event.target.classList.add('active');
       document.getElementById('tab-' + tab).classList.add('active');
+      
+      // Fetch guest data when switching to Guest List tab
+      if (tab === 'guests') {
+        fetchGuestData();
+      }
     }
 
     // Preview tab switching
@@ -1344,22 +1489,6 @@
     let currentSort = 'newest';
     let searchQuery = '';
 
-    // Initialize guest list
-    function initGuestList() {
-      // Demo data for testing
-      guestData = [
-        { name: 'John Smith', attending: 'Yes', message: 'Congratulations! So happy for you both!', timestamp: new Date('2026-08-15') },
-        { name: 'Maria Santos', attending: 'Yes', message: 'Can\'t wait to celebrate with you!', timestamp: new Date('2026-08-14') },
-        { name: 'Jose Dela Cruz', attending: 'No', message: 'Sorry we can\'t make it. Wishing you all the best!', timestamp: new Date('2026-08-13') },
-        { name: 'Anna Reyes', attending: 'Yes', message: '', timestamp: new Date('2026-08-12') },
-        { name: 'Peter Garcia', attending: 'Yes', message: 'See you there!', timestamp: new Date('2026-08-11') },
-        { name: 'Sofia Martinez', attending: 'No', message: '', timestamp: new Date('2026-08-10') },
-        { name: 'Miguel Torres', attending: 'Yes', message: 'What a beautiful couple! God bless you both.', timestamp: new Date('2026-08-09') },
-        { name: 'Elena Cruz', attending: 'Yes', message: 'So excited for the big day!', timestamp: new Date('2026-08-08') }
-      ];
-      applyFiltersAndSort();
-    }
-
     // Apply filters and sort
     function applyFiltersAndSort() {
       let result = [...guestData];
@@ -1369,8 +1498,10 @@
         result = result.filter(g => g.attending === 'Yes');
       } else if (currentFilter === 'No') {
         result = result.filter(g => g.attending === 'No');
+      } else if (currentFilter === 'pending') {
+        result = result.filter(g => !g.attending || g.attending.trim() === '');
       } else if (currentFilter === 'message') {
-        result = result.filter(g => g.message && g.message.trim() !== '');
+        result = result.filter(g => g.message && g.message.trim() !== '' && g.message !== '(no message)');
       }
 
       // Apply search
@@ -1405,11 +1536,13 @@
       const total = guestData.length;
       const accepted = guestData.filter(g => g.attending === 'Yes').length;
       const declined = guestData.filter(g => g.attending === 'No').length;
-      const messages = guestData.filter(g => g.message && g.message.trim() !== '').length;
+      const pending = guestData.filter(g => !g.attending || g.attending.trim() === '').length;
+      const messages = guestData.filter(g => g.message && g.message.trim() !== '' && g.message !== '(no message)').length;
 
       document.getElementById('totalCount').textContent = total;
       document.getElementById('acceptedCount').textContent = accepted;
       document.getElementById('declinedCount').textContent = declined;
+      document.getElementById('pendingCount').textContent = pending;
       document.getElementById('messagesCount').textContent = messages;
 
       // Animate numbers
@@ -1442,9 +1575,8 @@
             </td>
           </tr>`;
       } else {
-        const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '');
         tbody.innerHTML = filteredGuests.map(guest => {
-          const rsvpLink = baseUrl + 'rsvp.html?name=' + encodeURIComponent(guest.name);
+          const rsvpLink = guest.link || (window.location.origin + window.location.pathname.replace('index.html', '') + 'rsvp.html?name=' + encodeURIComponent(guest.name));
           return `
           <tr>
             <td>
@@ -1459,7 +1591,7 @@
                 </button>
               </div>
             </td>
-            <td><span class="guest-status ${guest.attending === 'Yes' ? 'status-yes' : 'status-no'}">${guest.attending === 'Yes' ? '✓ Accepted' : '✕ Declined'}</span></td>
+            <td><span class="guest-status ${guest.attending === 'Yes' ? 'status-yes' : 'status-no'}">${guest.attending === 'Yes' ? '✓ Accepted' : guest.attending === 'No' ? '✕ Declined' : 'Pending'}</span></td>
             <td><span class="guest-message" title="${escapeHtml(guest.message || 'No message')}">${escapeHtml(guest.message || '—')}</span></td>
             <td><span class="guest-date">${formatDate(guest.timestamp)}</span></td>
           </tr>`;
@@ -1471,8 +1603,8 @@
 
     // Copy RSVP link to clipboard
     async function copyRsvpLink(name, button) {
-      const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '');
-      const rsvpLink = baseUrl + 'rsvp.html?name=' + encodeURIComponent(name);
+      const guest = guestData.find(g => g.name === name);
+      const rsvpLink = guest?.link || (window.location.origin + window.location.pathname.replace('index.html', '') + 'rsvp.html?name=' + encodeURIComponent(name));
       
       try {
         await navigator.clipboard.writeText(rsvpLink);
@@ -1538,8 +1670,9 @@
       const scriptUrl = document.getElementById('scriptUrl').value;
       
       if (!scriptUrl || scriptUrl === 'https://script.google.com/macros/s/XXXX/exec') {
-        showToast('Using demo data. Add your Apps Script URL in Settings.', 'info');
-        initGuestList();
+        showToast('Add your Apps Script URL in Settings first.', 'info');
+        guestData = [];
+        applyFiltersAndSort();
         return;
       }
 
@@ -1553,15 +1686,15 @@
             name: g.name,
             attending: g.attending,
             message: g.message,
-            timestamp: new Date(g.timestamp)
+            link: g.link || '',
+            timestamp: new Date()
           }));
           applyFiltersAndSort();
-          showToast('Guest data loaded!', 'success');
+          showToast(`Loaded ${guestData.length} guests`, 'success');
         }
       } catch (err) {
         console.error('Error fetching data:', err);
-        showToast('Error fetching data. Using demo data.', 'error');
-        initGuestList();
+        showToast('Error fetching data. Check your Apps Script URL.', 'error');
       }
     }
 
@@ -1575,8 +1708,6 @@
         ease: 'power2.out',
         delay: 0.2
       });
-      // Initialize guest list with demo data
-      initGuestList();
     });
 
     function updatePreview() {

@@ -326,11 +326,38 @@
 
     .error-msg.show { display: block; }
 
+    /* Responsive - Tablet */
+    @media (min-width: 481px) and (max-width: 768px) {
+      body { padding: 1.5rem 1rem; }
+      .card { max-width: 420px; }
+      .hero { height: 220px; }
+    }
+
+    /* Responsive - Mobile */
     @media (max-width: 480px) {
-      .card-body { padding: 1.5rem 1.25rem; }
-      .names { font-size: 1.5rem; }
-      .monogram { font-size: 2.5rem; }
-      .hero { height: 160px; }
+      body { padding: 1rem 0.75rem; }
+      .card { border-radius: var(--radius); }
+      .card-body { padding: 1.25rem 1rem 1.5rem; }
+      .names { font-size: 1.4rem; }
+      .monogram { font-size: 2.2rem; }
+      .hero { height: 150px; }
+      .date { font-size: 0.85rem; }
+      .hashtag { font-size: 0.75rem; }
+      .guest-greeting { font-size: 0.85rem; }
+      .radio-group { flex-direction: column; gap: 0.5rem; }
+      .radio-option { padding: 0.75rem; }
+      .btn-submit { padding: 0.85rem 1.5rem; font-size: 0.85rem; }
+      .footer-message { font-size: 0.75rem; }
+      .confirmation h2 { font-size: 1.5rem; }
+      .confirmation p { font-size: 0.85rem; }
+    }
+
+    /* Responsive - Small Mobile */
+    @media (max-width: 360px) {
+      .card-body { padding: 1rem 0.75rem 1.25rem; }
+      .names { font-size: 1.2rem; }
+      .monogram { font-size: 2rem; }
+      .radio-option { padding: 0.6rem; font-size: 0.8rem; }
     }
 
     @keyframes fadeIn {
@@ -444,7 +471,7 @@
     });
 
     // Form handling
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxLKG6P5C-WS1rZ5TodfsYAjADuCfWwJczfvmBK0jkCMGDDhZmQx0B6MP3mcDtfzQo/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxoAvT2O5ktRNSuiA3EEPWQVrRQEitmPGqWJqYCzF1hsw8VGE-HlN0xoqjWf_5skKo/exec';
     const form = document.getElementById('form');
     const errorEl = document.getElementById('error');
     const submitBtn = document.getElementById('submitBtn');
